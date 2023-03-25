@@ -19,8 +19,8 @@ app.use(Auth)
 const startApp = () => {
     const PORT = 8000
     mongoose.set('strictQuery', true)
-    mongoose.connect("mongodb+srv://ddonierov96:omc8iyDZ58OddMi7@doni.odgzc3z.mongodb.net/?retryWrites=true&w=majority")
-        .then((res) => console.log("MongoDB connected"))
+    mongoose.connect(process.env.URI)
+        .then(() => console.log("MongoDB connected"))
     app.listen(PORT, () => {
         console.log(`Server run on port ${PORT}`);
     })

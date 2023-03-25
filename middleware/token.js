@@ -6,6 +6,7 @@ export default async function (req, res, next) {
         const userId = token.payload.userId
         const user = await User.findById(userId)
         res.locals.user = user
+        return
     }
     next()
 }
