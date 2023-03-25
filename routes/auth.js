@@ -37,9 +37,9 @@ router.get('/api/user', (req, res) => {
 
 router.post('/api/login', async (req, res) => {
     const { email, password } = req.body.user
-    const existUser = await User.findOne({ email })
-    console.log(existUser);
 
+
+    const existUser = await User.findOne({ email })
     if (!existUser) {
         res.status(404).send({
             message: 'User not found'
@@ -47,19 +47,16 @@ router.post('/api/login', async (req, res) => {
         return;
     }
 
-    const PasswordIsEqual = await bcrypt.compare(req.body.user.password, existUser.password)
+    const PasswordIsEqual = await bcrypt.compare(password, existUser.password)
     if (!PasswordIsEqual) {
         res.status(403).send({
             message: 'Password is wrong'
         })
-        return
+        return;
     }
-
     const token = generateJWTTOKEN(existUser._id)
     res.send({ ...existUser, token: token })
 })
 
 
-
 export default router
-
