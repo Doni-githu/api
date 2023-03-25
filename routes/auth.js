@@ -36,7 +36,9 @@ router.get('/api/user', (req, res) => {
 })
 
 router.post('/api/login', async (req, res) => {
+    req.headers['content-type'] = 'text/json'
     const { email, password } = req.body.user
+    console.log(req.locals.user);
     const existUser = await User.findOne({ email })
     if (!existUser) {
         res.status(404).send({

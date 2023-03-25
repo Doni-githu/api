@@ -1,6 +1,6 @@
 import express from "express"
 import mongoose from "mongoose"
-import HomeProduct from "./routes/Products.js"
+import Product from "./routes/Products.js"
 import Auth from "./routes/auth.js"
 import * as dotenv from "dotenv"
 import token from "./middleware/token.js"
@@ -12,8 +12,8 @@ app.use(express.json())
 
 app.use(token)
 
-app.use(HomeProduct)
 app.use(Auth)
+app.use(Product)
 
 
 const startApp = () => {
