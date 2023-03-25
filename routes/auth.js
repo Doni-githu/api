@@ -1,19 +1,21 @@
 import { Router } from "express";
 import User from "../models/User.js";
 import bcrypt from "bcrypt"
-import { generateJWTTOKEN, getJWTTOKEN } from "../service/jwt.js";
+import { generateJWTTOKEN } from "../service/jwt.js";
 const router = Router()
 
-router.post('/api/user', async (req, res) => {
+router.post('/api/users', async (req, res) => {
     req.headers['content-type'] = 'text/json'
     const { firstName, lastName, email, password } = req.body.user
 
-    const condidate = await User.findOne({ email: email })
-    if (condidate) {
-        res.status(510)
+    const candidate = await User.findOne({ email })
+
+    if (candidate) {
+        res.status(404).send({
+            message: 'Email taken'
+        })
         return
     }
-    console.log("Condidate not");
 
     const hashPassword = await bcrypt.hash(password, 10)
     const dataUser = {
@@ -27,11 +29,37 @@ router.post('/api/user', async (req, res) => {
     res.send({ ...user, token: token })
 })
 
-
-router.get("/api/user/:token", async (req, res) => {
-    const user = await getJWTTOKEN(req.params.token)
-    console.log(user);
+router.get('/api/user', (req, res) => {
+    if (res.locals.user) {
+        res.send(res.locals.user)
+    }
 })
+
+router.post('/api/login', async (req, res) => {
+    const { email, password } = req.body.user
+    const existUser = await User.findOne({ email })
+    console.log(existUser);
+
+    if (!existUser) {
+        res.status(404).send({
+            message: 'User not found'
+        })
+        return;
+    }
+
+    const PasswordIsEqual = await bcrypt.compare(req.body.user.password, existUser.password)
+    if (!PasswordIsEqual) {
+        res.status(403).send({
+            message: 'Password is wrong'
+        })
+        return
+    }
+
+    const token = generateJWTTOKEN(existUser._id)
+    res.send({ ...existUser, token: token })
+})
+
+
 
 export default router
 
