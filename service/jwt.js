@@ -7,8 +7,8 @@ const generateJWTTOKEN = userId => {
 }
 
 const getJWTTOKEN = async token => {
-    const user = jwt.decode(token, { complete: true })
-    return user
+    const userId = await jwt.decode(token, { complete: true })
+    return userId
 }
 
 

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import User from "../models/User.js";
 import bcrypt from "bcrypt"
-import { generateJWTTOKEN } from "../service/jwt.js";
+import { generateJWTTOKEN, getJWTTOKEN } from "../service/jwt.js";
 const router = Router()
 
 router.post('/api/users', async (req, res) => {
@@ -29,16 +29,19 @@ router.post('/api/users', async (req, res) => {
     res.send({ ...user, token: token })
 })
 
-router.get('/api/user', (req, res) => {
-    if (res.locals.user) {
-        res.send(res.locals.user)
-    }
+router.get('/api/user', async (req, res) => {
+    const token = getJWTTOKEN(req.headers.authorization)
+    token.then(async (resp) => {
+        const user = await User.findById(resp.payload.userId)
+        res.send(user)
+    })
 })
+
 
 router.post('/api/login', async (req, res) => {
     req.headers['content-type'] = 'text/json'
     const { email, password } = req.body.user
-    console.log(req.locals.user);
+    console.log(res.locals.user);
     const existUser = await User.findOne({ email })
     if (!existUser) {
         res.status(404).send({
