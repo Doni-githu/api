@@ -31,10 +31,10 @@ router.post('/api/users', async (req, res) => {
 
 router.get('/api/user', async (req, res) => {
     const token = getJWTTOKEN(req.headers.authorization)
-    token.then(async (resp) => {
-        const user = await User.findById(resp.payload.userId)
+    if (token) {
+        const user = await User.findById(token.payload.userId)
         res.send(user)
-    })
+    }
 })
 
 

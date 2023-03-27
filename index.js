@@ -6,6 +6,7 @@ import * as dotenv from "dotenv"
 dotenv.config()
 const app = express()
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 
 
 
@@ -15,7 +16,8 @@ app.use(Product)
 
 
 const startApp = () => {
-    const PORT = 8000
+    const PORT = process.env.PORT ?? 8000
+    mongoose.set('strictQuery', true)
     mongoose.connect(process.env.URI,
         {
             useNewUrlParser: true,
