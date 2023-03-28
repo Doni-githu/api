@@ -22,13 +22,11 @@ router.post('/api/todo/add', async (req, res) => {
 })
 
 router.post('/api/todo/edit/:id', async (req) => {
-    console.log(req.body.article);
-    // await Product.findByIdAndUpdate(req.params.id, req.body.article, { new: true })
+    await Product.findByIdAndUpdate(req.params.id, req.body.article, { new: true })
 })
 
 router.delete('/api/todo/delete/:id', async (req, res) => {
-    await Product.findByIdAndRemove(req.params.id, { new: true })
+    const product = await Product.findByIdAndRemove(req.params.id, { new: true })
+    res.send(product)
 })
-
-
 export default router
