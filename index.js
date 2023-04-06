@@ -3,23 +3,28 @@ import mongoose, { get } from "mongoose"
 import Product from "./routes/Products.js"
 import Auth from "./routes/auth.js"
 import * as dotenv from "dotenv"
+import cors from "cors"
 dotenv.config()
-const api = express()
-
-api.use(express.json())
-api.use(express.urlencoded({ extended: true }));
+const app = express()
 
 
-api.use(Auth)
-api.use(Product)
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+    origin: "http://localhost:5173"
+}))
+
+
+app.use(Auth)
+app.use(Product)
 const startApi = () => {
-    const PORT = process.env.PORT ?? 8000
+    const PORT = process.env.PORT || 8000
     mongoose.set('strictQuery', true)
     mongoose.connect(process.env.URI, { useNewUrlParser: true, })
         .then(() => console.log("MongoDB is connected"))
         .catch((err) => console.log("MongoDB can't connect" + ' ' + err))
-    api.listen(PORT, () => {
+    app.listen(PORT, () => {
         console.log(`Server run on port ${PORT}`);
     })
 }
